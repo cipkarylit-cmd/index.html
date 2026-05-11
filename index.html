@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Трекер реклами — Royal & Art55</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f13;
+    --surface: #17171f;
+    --surface2: #1f1f2b;
+    --border: #2a2a3a;
+    --green: #22c97a;
+    --yellow: #f5c842;
+    --red: #fc5c5c;
+    --blue: #5b9cf6;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+
+    /* Royal colors */
+    --royal-a: #7c5cfc;
+    --royal-b: #fc5c8a;
+
+    /* Art55 colors */
+    --art-a: #f5a623;
+    --art-b: #fc5c5c;
+  }
+
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 28px 24px; }
+
+  /* STORE TABS */
+  .store-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .store-tab {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 22px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: -0.3px;
+    user-select: none;
+  }
+  .store-tab:hover { border-color: var(--muted); color: var(--text); }
+
+  .store-tab.royal.active {
+    border-color: var(--royal-a);
+    background: rgba(124,92,252,0.1);
+    color: #fff;
+  }
+  .store-tab.art.active {
+    border-color: var(--art-a);
+    background: rgba(245,166,35,0.1);
+    color: #fff;
+  }
+
+  .tab-icon {
+    width: 32px; height: 32px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .royal .tab-icon { background: linear-gradient(135deg, #7c5cfc, #fc5c8a); }
+  .art .tab-icon { background: linear-gradient(135deg, #f5a623, #fc5c5c); }
+
+  .tab-title-block { text-align: left; }
+  .tab-sub { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+
+  .sync-status {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--muted);
+  }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .sync-dot.syncing { background: var(--yellow); animation: blink 0.8s infinite; }
+  .sync-dot.error { background: var(--red); }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 14px; }
+
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .logo-icon.royal { background: linear-gradient(135deg, #7c5cfc, #fc5c8a); }
+  .logo-icon.art { background: linear-gradient(135deg, #f5a623, #fc5c5c); }
+
+  .header-title {
+    font-family: 'Unbounded', sans-serif; font-size: 18px; font-weight: 700;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .header-title.royal { background: linear-gradient(90deg, #7c5cfc, #fc5c8a); }
+  .header-title.art { background: linear-gradient(90deg, #f5a623, #fc5c5c); }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  .btn-add {
+    border: none; border-radius: 12px; padding: 12px 24px;
+    color: #fff; font-size: 13px; font-weight: 700;
+    font-family: 'Unbounded', sans-serif; cursor: pointer;
+    letter-spacing: -0.3px; transition: opacity 0.2s, transform 0.15s; white-space: nowrap;
+  }
+  .btn-add:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-add.royal { background: linear-gradient(135deg, #7c5cfc, #fc5c8a); }
+  .btn-add.art { background: linear-gradient(135deg, #f5a623, #fc5c5c); }
+
+  /* CONTROLS */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  .search-input { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; width: 220px; transition: border-color 0.2s; }
+  .search-input:focus { border-color: var(--royal-a); }
+  .search-input.art:focus { border-color: var(--art-a); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .filter-group { display: flex; gap: 6px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 13px; font-size: 12px; color: var(--muted); }
+  .filter-group select { background: transparent; border: none; color: var(--text); font-size: 12px; font-family: 'Inter', sans-serif; outline: none; cursor: pointer; }
+  .filter-group select option { background: #1f1f2b; }
+
+  .count-badge { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: 12px; color: var(--muted); margin-left: auto; }
+  .count-badge span { font-weight: 600; }
+  .count-badge span.royal { color: var(--royal-a); }
+  .count-badge span.art { color: var(--art-a); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); }
+  .table-wrap.royal { box-shadow: 0 4px 40px rgba(124,92,252,0.08); }
+  .table-wrap.art { box-shadow: 0 4px 40px rgba(245,166,35,0.08); }
+
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  thead tr { background: var(--surface2); }
+  th { padding: 14px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.15s; }
+  th:hover { color: var(--royal-a); }
+  th:last-child { cursor: default; }
+  th:last-child:hover { color: var(--muted); }
+
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(124,92,252,0.06); }
+  tbody tr.art-row:hover { background: rgba(245,166,35,0.06); }
+  tbody tr:last-child { border-bottom: none; }
+
+  td { padding: 14px 16px; font-size: 13px; vertical-align: top; line-height: 1.5; }
+  .product-name { font-weight: 600; color: var(--text); line-height: 1.4; }
+
+  .link-cell a { text-decoration: none; font-size: 12px; word-break: break-all; transition: opacity 0.15s; }
+  .link-cell a:hover { opacity: 0.7; }
+  .link-cell a.royal { color: var(--royal-a); }
+  .link-cell a.art { color: var(--art-a); }
+  .link-cell .no-link { color: var(--muted); font-size: 12px; font-style: italic; }
+
+  .platform-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-fb { background: rgba(24,119,242,0.15); color: #5b9cf6; border: 1px solid rgba(24,119,242,0.25); }
+  .badge-ig { background: rgba(225,48,108,0.15); color: #f06090; border: 1px solid rgba(225,48,108,0.25); }
+  .badge-tt { background: rgba(254,44,85,0.12); color: #fe6080; border: 1px solid rgba(254,44,85,0.25); }
+  .badge-go { background: rgba(91,156,246,0.12); color: #5b9cf6; border: 1px solid rgba(91,156,246,0.25); }
+
+  .status-badge { display: inline-block; padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .status-active { background: rgba(34,201,122,0.15); color: var(--green); border: 1px solid rgba(34,201,122,0.3); }
+  .status-pause  { background: rgba(245,200,66,0.15);  color: var(--yellow); border: 1px solid rgba(245,200,66,0.3); }
+  .status-stop   { background: rgba(252,92,92,0.15);   color: var(--red);    border: 1px solid rgba(252,92,92,0.3); }
+  .status-test   { background: rgba(91,156,246,0.15);  color: var(--blue);   border: 1px solid rgba(91,156,246,0.3); }
+
+  .comment-text { color: var(--muted); font-size: 12px; line-height: 1.6; max-width: 300px; }
+
+  .action-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; color: var(--muted); font-size: 12px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+  .action-btn:hover { border-color: var(--royal-a); color: var(--royal-a); }
+  .action-btn.art:hover { border-color: var(--art-a); color: var(--art-a); }
+  .action-btn.del:hover { border-color: var(--red) !important; color: var(--red) !important; }
+
+  .empty-state { text-align: center; padding: 70px 20px; color: var(--muted); }
+  .empty-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.4; }
+  .empty-text { font-size: 14px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+  .modal-title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 22px; letter-spacing: -0.4px; }
+  .modal-title.royal { background: linear-gradient(90deg,#7c5cfc,#fc5c8a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .modal-title.art   { background: linear-gradient(90deg,#f5a623,#fc5c5c); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+  .form-field { margin-bottom: 16px; }
+  .form-field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 7px; }
+  .form-field input, .form-field select, .form-field textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px; color: var(--text); font-size: 13px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--royal-a); }
+  .form-field.art input:focus, .form-field.art select:focus, .form-field.art textarea:focus { border-color: var(--art-a); }
+  .form-field input::placeholder, .form-field textarea::placeholder { color: var(--muted); }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+  .form-field select option { background: #1f1f2b; }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+  .btn-cancel { background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 11px 22px; color: var(--muted); font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+  .btn-save { border: none; border-radius: 10px; padding: 11px 26px; color: #fff; font-size: 13px; font-weight: 700; font-family: 'Unbounded', sans-serif; cursor: pointer; letter-spacing: -0.3px; transition: opacity 0.2s; }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-save.royal { background: linear-gradient(135deg, #7c5cfc, #fc5c8a); }
+  .btn-save.art   { background: linear-gradient(135deg, #f5a623, #fc5c5c); }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- STORE SWITCHER -->
+<div class="store-tabs">
+  <div class="store-tab royal active" id="tab-royal" onclick="switchStore('royal')">
+    <div class="tab-icon">💎</div>
+    <div class="tab-title-block">
+      <div>ROYAL BRACELETS</div>
+      <div class="tab-sub">Facebook · Instagram · TikTok</div>
+    </div>
+  </div>
+  <div class="store-tab art" id="tab-art" onclick="switchStore('art')">
+    <div class="tab-icon">🎨</div>
+    <div class="tab-title-block">
+      <div>ART55</div>
+      <div class="tab-sub">Facebook · Instagram · TikTok</div>
+    </div>
+  </div>
+  <div class="sync-status">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncLabel">Завантаження...</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon royal" id="logoIcon">💎</div>
+    <div>
+      <div class="header-title royal" id="headerTitle">ROYAL BRACELETS</div>
+      <div class="header-sub" id="headerSub">Трекер товарів у рекламі · Facebook / Instagram · TikTok</div>
+    </div>
+  </div>
+  <button class="btn-add royal" id="btnAdd" onclick="openModal()">＋ Додати товар</button>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <input class="search-input royal" id="searchInput" type="text" placeholder="🔍 Пошук товару..." oninput="renderTable()">
+  <div class="filter-group">
+    📱
+    <select id="filterPlatform" onchange="renderTable()">
+      <option value="">Всі платформи</option>
+      <option>Facebook</option>
+      <option>Instagram</option>
+      <option>TikTok</option>
+      <option>Google</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    🚦
+    <select id="filterStatus" onchange="renderTable()">
+      <option value="">Всі статуси</option>
+      <option>Активна</option>
+      <option>Пауза</option>
+      <option>Зупинена</option>
+      <option>Тест</option>
+    </select>
+  </div>
+  <div class="count-badge">Товарів: <span id="countSpan" class="royal">0</span></div>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap royal" id="tableWrap">
+  <table>
+    <thead>
+      <tr>
+        <th onclick="sortBy('name')" style="width:22%">Назва товару</th>
+        <th style="width:24%">Посилання</th>
+        <th onclick="sortBy('platform')" style="width:13%">Платформа</th>
+        <th onclick="sortBy('status')" style="width:13%">Статус реклами</th>
+        <th style="width:24%">Як працює / Коментар</th>
+        <th style="width:4%"></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title royal" id="modalTitle">Новий товар</div>
+    <div class="form-field" id="ff-name"><label>Назва товару *</label>
+      <input type="text" id="f_name" placeholder="Наприклад: Gold Chain Bracelet"></div>
+    <div class="form-field" id="ff-link"><label>Посилання на товар</label>
+      <input type="url" id="f_link" placeholder="https://..."></div>
+    <div class="form-field" id="ff-platform"><label>Платформа *</label>
+      <select id="f_platform">
+        <option>Facebook</option><option>Instagram</option><option>TikTok</option><option>Google</option>
+      </select></div>
+    <div class="form-field" id="ff-status"><label>Статус реклами</label>
+      <select id="f_status">
+        <option>Активна</option><option>Тест</option><option>Пауза</option><option>Зупинена</option>
+      </select></div>
+    <div class="form-field" id="ff-comment"><label>Як працює / Коментар</label>
+      <textarea id="f_comment" placeholder="Що спрацювало, що ні..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Скасувати</button>
+      <button class="btn-save royal" id="btnSave" onclick="saveEntry()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_KEY = '$2a$10$Mhb4.Ri4vRh6XeFADPOar.4P8U/vn4jrp17DZe0sUsMV.JGhGVqkW';
+const BIN_KEY = 'tracker_bin_id_v2';
+
+let binId = localStorage.getItem(BIN_KEY) || null;
+let allData = { royal: [], art: [] };
+let currentStore = 'royal';
+let editIdx = null;
+let sortKey = '';
+let sortDir = 1;
+
+// ── API ───────────────────────────────────────────────────
+async function api(method, path, body) {
+  const headers = { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY };
+  if (method === 'POST' && !binId) { headers['X-Bin-Name'] = 'two-store-tracker'; headers['X-Bin-Private'] = 'false'; }
+  const r = await fetch('https://api.jsonbin.io/v3' + path, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function loadData() {
+  setSyncing(true);
+  try {
+    if (!binId) {
+      const res = await api('POST', '/b', { royal: [], art: [] });
+      binId = res.metadata.id;
+      localStorage.setItem(BIN_KEY, binId);
+    }
+    const res = await api('GET', '/b/' + binId + '/latest');
+    allData = { royal: res.record.royal || [], art: res.record.art || [] };
+    setSynced();
+  } catch(e) { setError(); }
+  renderTable();
+}
+
+async function saveData() {
+  setSyncing(true);
+  try { await api('PUT', '/b/' + binId, allData); setSynced(); }
+  catch(e) { setError(); }
+}
+
+function setSyncing(on) {
+  document.getElementById('syncDot').className = 'sync-dot' + (on ? ' syncing' : '');
+  document.getElementById('syncLabel').textContent = on ? 'Синхронізація...' : 'Синхронізовано';
+}
+function setSynced() { setSyncing(false); }
+function setError() {
+  document.getElementById('syncDot').className = 'sync-dot error';
+  document.getElementById('syncLabel').textContent = 'Помилка';
+}
+
+// ── Store switch ──────────────────────────────────────────
+const storeConfig = {
+  royal: { icon:'💎', title:'ROYAL BRACELETS', sub:'Трекер товарів у рекламі · Facebook / Instagram · TikTok', emptyIcon:'💎' },
+  art:   { icon:'🎨', title:'ART55',           sub:'Трекер товарів у рекламі · Facebook / Instagram · TikTok', emptyIcon:'🎨' }
+};
+
+function switchStore(store) {
+  currentStore = store;
+  sortKey = ''; sortDir = 1;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterPlatform').value = '';
+  document.getElementById('filterStatus').value = '';
+
+  const isArt = store === 'art';
+  document.getElementById('tab-royal').className = 'store-tab royal' + (isArt ? '' : ' active');
+  document.getElementById('tab-art').className   = 'store-tab art'   + (isArt ? ' active' : '');
+
+  const cfg = storeConfig[store];
+  document.getElementById('logoIcon').className = `logo-icon ${store}`;
+  document.getElementById('logoIcon').textContent = cfg.icon;
+  document.getElementById('headerTitle').className = `header-title ${store}`;
+  document.getElementById('headerTitle').textContent = cfg.title;
+  document.getElementById('headerSub').textContent = cfg.sub;
+  document.getElementById('btnAdd').className = `btn-add ${store}`;
+  document.getElementById('tableWrap').className = `table-wrap ${store}`;
+  document.getElementById('countSpan').className = store;
+  document.getElementById('searchInput').className = `search-input ${store}`;
+
+  renderTable();
+}
+
+// ── Table ─────────────────────────────────────────────────
+function platformBadge(p) {
+  const icons = { Facebook:'🔵', Instagram:'🌸', TikTok:'🎵', Google:'🔍' };
+  const cls   = { Facebook:'badge-fb', Instagram:'badge-ig', TikTok:'badge-tt', Google:'badge-go' };
+  return `<span class="platform-badge ${cls[p]||'badge-fb'}">${icons[p]||''} ${p}</span>`;
+}
+function statusBadge(s) {
+  const cls = { 'Активна':'status-active','Пауза':'status-pause','Зупинена':'status-stop','Тест':'status-test' };
+  return `<span class="status-badge ${cls[s]||'status-test'}">${s}</span>`;
+}
+
+function getFiltered() {
+  const search = (document.getElementById('searchInput').value||'').toLowerCase();
+  const platform = document.getElementById('filterPlatform').value;
+  const status = document.getElementById('filterStatus').value;
+  let list = (allData[currentStore]||[]).filter(r =>
+    (!search || (r.name||'').toLowerCase().includes(search) || (r.link||'').toLowerCase().includes(search) || (r.comment||'').toLowerCase().includes(search))
+    && (!platform || r.platform === platform)
+    && (!status   || r.status   === status)
+  );
+  if (sortKey) list.sort((a,b) => (a[sortKey]||'').localeCompare(b[sortKey]||'') * sortDir);
+  return list;
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  document.getElementById('countSpan').textContent = filtered.length;
+  const tbody = document.getElementById('tableBody');
+  const cfg = storeConfig[currentStore];
+  const s = currentStore;
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+      <div class="empty-icon">${cfg.emptyIcon}</div>
+      <div class="empty-text">Поки порожньо — додай перший товар!</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => {
+    const realIdx = allData[s].indexOf(r);
+    const linkHtml = r.link
+      ? `<a href="${r.link}" target="_blank" class="${s}">🔗 ${r.link.replace(/^https?:\/\//,'').replace(/\/$/,'')}</a>`
+      : `<span class="no-link">— не вказано</span>`;
+    return `<tr class="${s === 'art' ? 'art-row' : ''}">
+      <td><div class="product-name">${r.name}</div></td>
+      <td class="link-cell">${linkHtml}</td>
+      <td>${platformBadge(r.platform)}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td><div class="comment-text">${r.comment || '<span style="color:var(--border)">—</span>'}</div></td>
+      <td>
+        <div style="display:flex;gap:5px;flex-direction:column">
+          <button class="action-btn ${s}" onclick="editEntry(${realIdx})">✏️</button>
+          <button class="action-btn del" onclick="deleteEntry(${realIdx})">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+  renderTable();
+}
+
+// ── Modal ─────────────────────────────────────────────────
+function openModal(idx = null) {
+  editIdx = idx;
+  const s = currentStore;
+  const r = idx !== null ? allData[s][idx] : null;
+
+  document.getElementById('modalTitle').className = `modal-title ${s}`;
+  document.getElementById('modalTitle').textContent = idx !== null ? 'Редагувати товар' : 'Новий товар';
+  document.getElementById('btnSave').className = `btn-save ${s}`;
+
+  document.getElementById('f_name').value    = r?.name    || '';
+  document.getElementById('f_link').value    = r?.link    || '';
+  document.getElementById('f_platform').value = r?.platform || 'Facebook';
+  document.getElementById('f_status').value  = r?.status  || 'Активна';
+  document.getElementById('f_comment').value = r?.comment || '';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('f_name').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editIdx = null;
+}
+
+async function saveEntry() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { alert('Введи назву товару!'); return; }
+  const entry = {
+    name,
+    link:     document.getElementById('f_link').value.trim(),
+    platform: document.getElementById('f_platform').value,
+    status:   document.getElementById('f_status').value,
+    comment:  document.getElementById('f_comment').value.trim(),
+  };
+  const arr = allData[currentStore];
+  if (editIdx !== null) arr[editIdx] = entry; else arr.push(entry);
+  closeModal(); renderTable();
+  await saveData();
+}
+
+function editEntry(idx) { openModal(idx); }
+
+async function deleteEntry(idx) {
+  const name = allData[currentStore][idx]?.name || 'товар';
+  if (!confirm(`Видалити "${name}"?`)) return;
+  allData[currentStore].splice(idx, 1);
+  renderTable();
+  await saveData();
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Auto-refresh
+setInterval(async () => {
+  if (document.getElementById('modalOverlay').classList.contains('open') || !binId) return;
+  try {
+    const res = await api('GET', '/b/' + binId + '/latest');
+    const fresh = { royal: res.record.royal||[], art: res.record.art||[] };
+    if (JSON.stringify(fresh) !== JSON.stringify(allData)) { allData = fresh; renderTable(); }
+  } catch(e) {}
+}, 15000);
+
+loadData();
+</script>
+</body>
+</html>
